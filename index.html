@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leviora Edu | Interactive Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Accents (Customized) -->
+    <!-- Application Structure Plan: A single-page, scrollable narrative design is chosen over a slide-based format to create a continuous, engaging story. A sticky navigation bar allows for both guided scrolling and direct access to key sections (Problem, Solution, Market, etc.). This structure guides investors logically from the problem's scale to the solution's elegance and the market's potential, using interactive charts and animated stats to maintain engagement and emphasize key data points, making the business case more compelling. -->
+    <!-- Visualization & Content Choices: 
+        - Problem Stats (Employability): Goal: Inform -> Viz: Donut Chart (Chart.js) -> Interaction: Animate on scroll -> Justification: Best for showing a stark part-to-whole comparison. CONFIRM: NO SVG/Mermaid.
+        - Problem Stats (Dropout/Counseling): Goal: Compare -> Viz: Bar Chart (Chart.js) -> Interaction: Animate on scroll -> Justification: Effectively compares the magnitude of different systemic issues. CONFIRM: NO SVG/Mermaid.
+        - 3-Stage Ecosystem: Goal: Organize -> Viz: HTML/CSS Flow Diagram -> Interaction: Hover highlight on stages -> Justification: Clearly visualizes a process without prohibited libraries. CONFIRM: NO SVG/Mermaid.
+        - Market Size (TAM/SAM/SOM): Goal: Compare -> Viz: Horizontal Bar Chart (Chart.js) -> Interaction: Animate on scroll -> Justification: Ideal for comparing categories with long labels. CONFIRM: NO SVG/Mermaid.
+        - Growth Projections: Goal: Change -> Viz: Line Chart (Chart.js) -> Interaction: Animate on scroll -> Justification: Standard and most effective way to show a trend over time. CONFIRM: NO SVG/Mermaid.
+        - Competitor Quadrant: Goal: Organize -> Viz: HTML/CSS Grid Diagram -> Interaction: Static -> Justification: Directly and semantically represents the strategic 2x2 matrix. CONFIRM: NO SVG/Mermaid.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D3B30;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .nav-link.active {
+            color: #D97706;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-2xl font-bold text-amber-600">Leviora Edu</div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#problem" class="nav-link text-gray-600 hover:text-amber-600 transition-colors">The Problem</a>
+                    <a href="#solution" class="nav-link text-gray-600 hover:text-amber-600 transition-colors">Solution</a>
+                    <a href="#market" class="nav-link text-gray-600 hover:text-amber-600 transition-colors">Market</a>
+                    <a href="#advantage" class="nav-link text-gray-600 hover:text-amber-600 transition-colors">Advantage</a>
+                    <a href="#growth" class="nav-link text-gray-600 hover:text-amber-600 transition-colors">Growth</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-amber-700">A Skills-First Ecosystem for India</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">Bridging the gap between learning and living. We are transforming India into a nation of doers—future-ready, job-ready, and life-ready.</p>
+            </div>
+        </section>
+
+        <section id="problem" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Education Crisis: Degrees Without Direction</h2>
+                    <p class="mt-4 text-gray-600">Education today is too focused on marks and memorization, leaving students underprepared for the real world. This creates a massive, measurable skills gap that affects millions.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-6 rounded-lg shadow-lg animate-on-scroll">
+                        <h3 class="text-xl font-semibold text-center text-amber-800">Only 42.6% of Graduates are Employable</h3>
+                        <p class="text-sm text-center text-gray-500 mt-1 mb-4">A stark indicator of the disconnect between academic knowledge and real-world job requirements.</p>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="employabilityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg animate-on-scroll">
+                        <h3 class="text-xl font-semibold text-center text-amber-800">Key Systemic Failures</h3>
+                        <p class="text-sm text-center text-gray-500 mt-1 mb-4">The problem is multifaceted, from high dropout rates to a severe lack of guidance and industry readiness.</p>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="problemsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 md:py-24 bg-amber-50">
+            <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">A Holistic Solution: Our 3-Stage Ecosystem</h2>
+                    <p class="mt-4 text-gray-600">We have designed a continuous learning-to-earning journey that builds practical skills, confidence, and career clarity from an early age, delivering tangible outcomes at each step.</p>
+                </div>
+
+                <div class="mt-12 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+                    <div class="stage-card bg-white p-6 rounded-lg shadow-lg w-full md:w-1/3 text-center transition-all duration-300 hover:shadow-2xl hover:scale-105 animate-on-scroll">
+                        <div class="text-2xl font-bold text-amber-600">Stage 1</div>
+                        <h3 class="text-lg font-semibold mt-1">High School (9th-10th)</h3>
+                        <p class="mt-2 text-gray-600 text-sm">Focus on foundational soft skills and project-based learning to spark curiosity and informed choices.</p>
+                        <div class="mt-4 bg-amber-100 text-amber-800 font-bold py-2 px-4 rounded-full text-sm">Outcome: 35% Reduction in Wrong Stream Choices</div>
+                    </div>
+                    <div class="text-3xl text-amber-400 font-light mx-4 transform rotate-90 md:rotate-0">➔</div>
+                    <div class="stage-card bg-white p-6 rounded-lg shadow-lg w-full md:w-1/3 text-center transition-all duration-300 hover:shadow-2xl hover:scale-105 animate-on-scroll">
+                        <div class="text-2xl font-bold text-amber-600">Stage 2</div>
+                        <h3 class="text-lg font-semibold mt-1">Pre-University (11th-12th)</h3>
+                        <p class="mt-2 text-gray-600 text-sm">Build professional exam foundations and foster innovation through real-world projects and labs.</p>
+                        <div class="mt-4 bg-amber-100 text-amber-800 font-bold py-2 px-4 rounded-full text-sm">Outcome: 20-30% Higher Internship Conversion</div>
+                    </div>
+                    <div class="text-3xl text-amber-400 font-light mx-4 transform rotate-90 md:rotate-0">➔</div>
+                    <div class="stage-card bg-white p-6 rounded-lg shadow-lg w-full md:w-1/3 text-center transition-all duration-300 hover:shadow-2xl hover:scale-105 animate-on-scroll">
+                        <div class="text-2xl font-bold text-amber-600">Stage 3</div>
+                        <h3 class="text-lg font-semibold mt-1">University Level</h3>
+                        <p class="mt-2 text-gray-600 text-sm">Provide clear career roadmaps, incubation, and hands-on freelancing to connect learning directly to earning.</p>
+                        <div class="mt-4 bg-amber-100 text-amber-800 font-bold py-2 px-4 rounded-full text-sm">Outcome: Earn ₹5k-25k/month</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="market" class="py-16 md:py-24">
+            <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">A Vast and Untapped Market</h2>
+                    <p class="mt-4 text-gray-600">India's student population in Tier-2, Tier-3, and Tier-4 cities is a massively underserved market, with current solutions being too expensive and fragmented.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+                    <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow-lg animate-on-scroll">
+                        <h3 class="text-xl font-semibold text-center text-amber-800">Annual Market Sizing (in Crores)</h3>
+                         <div class="chart-container">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 space-y-6 text-center">
+                        <div class="bg-white p-6 rounded-lg shadow-lg animate-on-scroll">
+                            <h4 class="text-lg font-semibold text-gray-600">Student Earning Potential</h4>
+                            <p class="text-5xl font-extrabold text-amber-600 mt-2">₹1,200 Cr</p>
+                            <p class="text-sm text-gray-500">Per year, via our platform</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg animate-on-scroll">
+                            <h4 class="text-lg font-semibold text-gray-600">5-Year Obtainable Market</h4>
+                            <p class="text-5xl font-extrabold text-amber-600 mt-2">₹1,200 Cr</p>
+                             <p class="text-sm text-gray-500">Serviceable Obtainable Market (SOM)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="advantage" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">Our Unfair Advantage</h2>
+                    <p class="mt-4 text-gray-600">We occupy a unique position in the market by providing a highly effective, integrated, and affordable solution that is difficult for competitors to replicate.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                    <div class="bg-amber-50 p-6 rounded-lg shadow-lg flex flex-col animate-on-scroll">
+                        <h3 class="text-xl font-semibold text-center text-amber-800 mb-4">Why We Win</h3>
+                        <div class="space-y-4 flex-grow">
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <h4 class="font-bold">Continuous Development</h4>
+                                <p class="text-sm text-gray-600">We support students for 8-10 years, not just a single exam.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <h4 class="font-bold">Early Monetization</h4>
+                                <p class="text-sm text-gray-600">Our unique "learn-to-earn" model provides immediate, tangible value.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow">
+                                <h4 class="font-bold">Affordability</h4>
+                                <p class="text-sm text-gray-600">80% more affordable than traditional coaching, built for Tier-2/3/4.</p>
+                            </div>
+                             <div class="bg-white p-4 rounded-lg shadow">
+                                <h4 class="font-bold">Integrated Ecosystem</h4>
+                                <p class="text-sm text-gray-600">We connect learning, projects, mentorship, and earning on a single platform.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50 p-6 rounded-lg shadow-lg animate-on-scroll">
+                        <h3 class="text-xl font-semibold text-center text-amber-800 mb-4">The Competitive Quadrant</h3>
+                        <div class="relative w-full h-80 md:h-96 border-2 border-amber-200 grid grid-cols-2 grid-rows-2">
+                            <div class="absolute -left-4 top-1/2 -translate-y-1/2 -rotate-90 font-semibold text-gray-500 tracking-wider">SKILL</div>
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full pb-2 font-semibold text-gray-500 tracking-wider">AFFORDABILITY</div>
+                            
+                            <div class="p-4 flex items-center justify-center text-center border-r border-b border-amber-200">
+                                <div>
+                                    <h4 class="font-semibold text-gray-700">High Skill, Low Affordability</h4>
+                                    <p class="text-xs text-gray-500">BYJU'S, Unacademy</p>
+                                </div>
+                            </div>
+                             <div class="p-4 flex items-center justify-center text-center bg-amber-100 border-b border-amber-200">
+                                <div>
+                                    <h4 class="font-bold text-lg text-amber-700">Leviora Edu</h4>
+                                    <p class="text-xs text-amber-600">High Skill, High Affordability</p>
+                                </div>
+                            </div>
+                            <div class="p-4 flex items-center justify-center text-center border-r border-amber-200">
+                                <div>
+                                    <h4 class="font-semibold text-gray-700">Low Skill, Low Affordability</h4>
+                                    <p class="text-xs text-gray-500">Traditional Coaching</p>
+                                </div>
+                            </div>
+                            <div class="p-4 flex items-center justify-center text-center">
+                                <div>
+                                    <h4 class="font-semibold text-gray-700">Low Skill, High Affordability</h4>
+                                    <p class="text-xs text-gray-500">YouTube, Free Content</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="growth" class="py-16 md:py-24">
+             <div class="container mx-auto px-4">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold">How We Will Scale Our Impact</h2>
+                    <p class="mt-4 text-gray-600">Our go-to-market strategy is focused on leveraging community, partnerships, and technology to reach and retain our target audience, with clear metrics to track our progress.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-6 rounded-lg shadow-lg animate-on-scroll">
+                         <h3 class="text-xl font-semibold text-center text-amber-800">5-Year Goal: 1 Million Students</h3>
+                         <div class="chart-container">
+                            <canvas id="growthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-lg text-center animate-on-scroll">
+                            <h4 class="font-semibold text-gray-600">Monthly Active Users</h4>
+                            <p class="text-4xl font-extrabold text-amber-600 mt-2">70-80%</p>
+                        </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg text-center animate-on-scroll">
+                            <h4 class="font-semibold text-gray-600">Referral Rate</h4>
+                            <p class="text-4xl font-extrabold text-amber-600 mt-2">20-25%</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg text-center animate-on-scroll col-span-2">
+                             <h4 class="font-semibold text-gray-600">Key Channels & Tactics</h4>
+                             <p class="text-sm text-gray-500 mt-2">Student Ambassadors, School Partnerships, Localized Social Media, & a Freemium Model to drive adoption.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cta" class="py-20 md:py-32 bg-amber-600 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold">Join Us in Building the Future of Learning.</h2>
+                <p class="mt-4 text-lg text-amber-100 max-w-3xl mx-auto">Our mission is to empower a generation of doers, ensuring that every individual, regardless of their background, can turn their potential into a prosperous reality.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white py-6">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            &copy; 2025 Leviora Edu. All Rights Reserved.
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartColors = {
+                primary: 'rgba(217, 119, 6, 1)',
+                primaryTransparent: 'rgba(217, 119, 6, 0.2)',
+                secondary: 'rgba(251, 191, 36, 1)',
+                danger: 'rgba(220, 38, 38, 0.7)',
+                dark: '#3D3B30',
+                gray: 'rgba(156, 163, 175, 0.2)'
+            };
+
+            const defaultChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: chartColors.dark,
+                            font: { family: 'Inter' }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: '#fff',
+                        titleColor: chartColors.dark,
+                        bodyColor: chartColors.dark,
+                        borderColor: chartColors.gray,
+                        borderWidth: 1,
+                        padding: 10,
+                        callbacks: {
+                           title: (tooltipItems) => {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                return Array.isArray(label) ? label.join(' ') : label;
+                           }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: chartColors.dark, font: { family: 'Inter' } },
+                        grid: { color: chartColors.gray }
+                    },
+                    x: {
+                        ticks: { color: chartColors.dark, font: { family: 'Inter' } },
+                        grid: { display: false }
+                    }
+                }
+            };
+            
+            const wrapLabel = (label) => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    let currentLine = '';
+                    const lines = [];
+                    words.forEach(word => {
+                        if ((currentLine + word).length > 16) {
+                            lines.push(currentLine.trim());
+                            currentLine = word + ' ';
+                        } else {
+                            currentLine += word + ' ';
+                        }
+                    });
+                    lines.push(currentLine.trim());
+                    return lines;
+                }
+                return label;
+            };
+
+            const chartInitializers = {
+                employabilityChart: () => new Chart(document.getElementById('employabilityChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Employable', 'Needing Skills'],
+                        datasets: [{
+                            data: [42.6, 57.4],
+                            backgroundColor: [chartColors.primary, chartColors.danger],
+                            borderColor: '#F8F7F4',
+                            borderWidth: 4,
+                        }]
+                    },
+                    options: { ...defaultChartOptions, scales: { y: { display: false }, x: { display: false } } }
+                }),
+                problemsChart: () => new Chart(document.getElementById('problemsChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Lack Career Counseling', 'Firms Can\'t Find Talent', 'Student Dropout Rate'],
+                        datasets: [{
+                            label: '%',
+                            data: [70, 50, 14.1],
+                            backgroundColor: [chartColors.primary, chartColors.secondary, chartColors.danger],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { ...defaultChartOptions, indexAxis: 'y' }
+                }),
+                marketChart: () => new Chart(document.getElementById('marketChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Total Addressable Market (TAM)', 'Serviceable Addressable (SAM)', 'Serviceable Obtainable (SOM)'].map(wrapLabel),
+                        datasets: [{
+                            label: 'Market Size in Cr/year',
+                            data: [15600, 14400, 1200],
+                            backgroundColor: [chartColors.dark, chartColors.primary, chartColors.secondary],
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { ...defaultChartOptions, indexAxis: 'y' }
+                }),
+                growthChart: () => new Chart(document.getElementById('growthChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                        datasets: [{
+                            label: 'Students Enrolled',
+                            data: [0, 150000, 400000, 700000, 1000000],
+                            borderColor: chartColors.primary,
+                            backgroundColor: chartColors.primaryTransparent,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { ...defaultChartOptions, scales: { ...defaultChartOptions.scales, y: { ...defaultChartOptions.scales.y, ticks: { ...defaultChartOptions.scales.y.ticks, callback: (v) => `${v/1000}k` } } } }
+                }),
+            };
+            
+            const createdCharts = {};
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const canvas = entry.target.querySelector('canvas');
+                        if (canvas && !createdCharts[canvas.id]) {
+                            createdCharts[canvas.id] = chartInitializers[canvas.id]();
+                        }
+                         entry.target.classList.add('fade-in-up');
+                         observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.chart-container, .animate-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
+            
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .animate-on-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+                .fade-in-up { opacity: 1; transform: translateY(0); }
+            `;
+            document.head.appendChild(style);
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+            const navObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px' });
+            sections.forEach(sec => navObserver.observe(sec));
+        });
+    </script>
+</body>
+</html>
